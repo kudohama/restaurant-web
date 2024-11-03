@@ -1,0 +1,7 @@
+body {
+    background: linear-gradient(45deg, #4a90e2, #50c9c3);
+}
+form {
+    max-width: 400px;
+    width: 100%;
+}

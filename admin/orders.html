@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="../assets/css/main.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('../images/caption.jpg');
+            background-size: cover;
+            background-position: zoom;
+            background-repeat: no-repeat;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        body.fade-in {
+            opacity: 1;
+        }
+        .admin-header {
+            background-color: rgba(26, 26, 26, 0.8); /* Nền mờ cho header */
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+        }
+        .sidebar {
+            background-color: rgba(26, 26, 26, 0.8); /* Nền mờ cho sidebar */
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            width: 280px;
+        }
+        .main-content {
+            margin-left: 280px;
+            transition: all 0.3s;
+        }
+        .table-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+        .header {
+        background-color: rgba(0, 0, 0, 0.5); /* Nền tối với độ trong suốt */
+        padding: 20px; /* Khoảng cách cho phần tiêu đề */
+        color: white; /* Màu chữ trắng */
+        text-align: center; /* Căn giữa nội dung */
+        }
+    </style>
+</head>
+<body class="fade-in">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 sidebar" id="sidebar">
+                <div class="position-sticky">
+                    <div class="admin-header">
+                        <h3 class="text-light m-0 text-center w-100">
+                            <i class="fas fa-shopping-cart me-2"></i>Orders Management
+                        </h3>
+                    </div>
+                    <ul class="nav flex-column px-2 mt-4">
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="index.html">
+                                <i class="fas fa-home me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" href="menu.html">
+                                <i class="fas fa-utensils me-2"></i>Menu Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active text-light" href="orders.html">
+                                <i class="fas fa-shopping-cart me-2"></i>Orders
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <button class="btn btn-primary mx-3" onclick="window.location.href='../login/index.html'">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </button>
+                        </li>
+                        <li class="nav-item mt-2">
+                            <button class="btn btn-danger mx-3" onclick="window.location.href='../login/index.html'">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 col-lg-10 main-content">
+                <div class="header">
+                    <h1 class="mb-2 menu-title">Manage Your Orders</h1>
+                </div>
+                <div class="container table-container">
+                    <h2 class="text-center">Order List</h2>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Order Date</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>001</td>
+                                <td>Jane Smith</td>
+                                <td>2023-11-01</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>$8.99</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info view-btn"><i class="fas fa-eye"></i> Xem</button>
+                                    <button class="btn btn-sm btn-danger delete-btn"><i class="fas fa-trash-alt"></i> Xóa</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>002</td>
+                                <td>John Doe</td>
+                                <td>2023-11-02</td>
+                                <td><span class="badge bg-success">Completed</span></td>
+                                <td>$15.50</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info view-btn"><i class="fas fa-eye"></i> Xem</button>
+                                    <button class="btn btn-sm btn-danger delete-btn"><i class="fas fa-trash-alt"></i> Xóa</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>003</td>
+                                <td>Mary Johnson</td>
+                                <td>2023-11-03</td>
+                                <td><span class="badge bg-danger">Canceled</span></td>
+                                <td>$12.75</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info view-btn"><i class="fas fa-eye"></i> Xem</button>
+                                    <button class="btn btn-sm btn-danger delete-btn"><i class="fas fa-trash-alt"></i> Xóa</button>
+                                </td>
+                            </tr>
+                            <!-- Add more orders as needed -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal for View Order Details -->
+    <div class="modal fade" id="viewOrderModal" tabindex="-1" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewOrderModalLabel">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Order ID:</strong> <span id="modalOrderId"></span></p>
+                    <p><strong>Customer Name:</strong> <span id="modalCustomerName"></span></p>
+                    <p><strong>Order Date:</strong> <span id="modalOrderDate"></span></p>
+                    <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+                    <p><strong>Total:</strong> $<span id="modalTotal"></span></p>
+                    
+                    <!-- Chi Tiết Món Ăn -->
+                    <h5 class="mt-4">Order Items</h5>
+                    <ul id="orderItemsList" class="list-group">
+                        <!-- Danh sách món ăn sẽ được thêm vào đây bằng JavaScript -->
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dữ liệu mẫu về các món ăn cho từng đơn hàng
+        const orderDetails = {
+            "001": [
+                { name: "Spring Rolls", quantity: 2, price: 4.99 },
+                { name: "Grilled Salmon", quantity: 1, price: 15.99 }
+            ],
+            "002": [
+                { name: "Classic Tiramisu", quantity: 1, price: 6.99 },
+                { name: "Fettuccine Alfredo", quantity: 1, price: 12.99 }
+            ],
+            "003": [
+                { name: "Bruschetta", quantity: 3, price: 3.99 },
+                { name: "New York Cheesecake", quantity: 2, price: 7.99 }
+            ]
+            // Thêm dữ liệu cho các đơn hàng khác tại đây
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Xem chi tiết đơn hàng
+            document.querySelectorAll('.view-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const row = this.closest('tr');
+                    const orderId = row.cells[0].textContent;
+                    document.getElementById('modalOrderId').textContent = orderId;
+                    document.getElementById('modalCustomerName').textContent = row.cells[1].textContent;
+                    document.getElementById('modalOrderDate').textContent = row.cells[2].textContent;
+                    document.getElementById('modalStatus').textContent = row.cells[3].textContent;
+                    document.getElementById('modalTotal').textContent = row.cells[4].textContent.replace('$', '');
+
+                    // Xóa danh sách món ăn hiện tại
+                    const orderItemsList = document.getElementById('orderItemsList');
+                    orderItemsList.innerHTML = '';
+
+                    // Thêm các món ăn vào danh sách
+                    const items = orderDetails[orderId] || []; // Lấy dữ liệu món ăn dựa vào orderId
+                    items.forEach(item => {
+                        const listItem = document.createElement('li');
+                        listItem.classList.add('list-group-item');
+                        listItem.innerHTML = `
+                            <strong>${item.name}</strong> - ${item.quantity} x $${item.price.toFixed(2)} 
+                            <span class="float-end">$${(item.quantity * item.price).toFixed(2)}</span>
+                        `;
+                        orderItemsList.appendChild(listItem);
+                    });
+
+                    new bootstrap.Modal(document.getElementById('viewOrderModal')).show();
+                });
+            });
+
+            // Xóa đơn hàng
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    if (confirm('Bạn có chắc chắn muốn xóa đơn hàng này không?')) {
+                        this.closest('tr').remove();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

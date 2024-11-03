@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('../images/caption.jpg');
+            background-size: cover;
+            background-position: zoom;
+            background-repeat: no-repeat;
+            animation: fadeIn 1s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .order-form {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+            border-color: #80bdff;
+        }
+
+        .menu-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            background-color: #fff;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .menu-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .price {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .quantity-input {
+            max-width: 100px;
+        }
+
+        .btn-order {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-order:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .menu-item.selected {
+            border-color: #007bff;
+            background-color: #f8f9ff;
+        }
+
+        .quantity-controls {
+            display: none;
+        }
+
+        .menu-item.selected .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-quantity {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 5px;
+        }
+
+        .quantity-display {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .menu-items-container {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .menu-items-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .menu-items-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .menu-items-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .menu-items-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .menu-item {
+            height: 150px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            background-color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .selected-items-preview {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .selected-item-badge {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-utensils me-2"></i>Restaurant
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Menu</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="order.html">Order Now</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="handleLogout()">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="order-form">
+            <h1 class="text-center mb-4">Place Your Order</h1>
+            <p class="text-center text-muted mb-4">Select your favorite dishes and customize your order</p>
+
+            <form id="orderForm">
+                <!-- Menu Items -->
+                <div class="menu-section mb-4">
+                    <h4 class="mb-3">Select Your Items</h4>
+                    
+                    <!-- Hiển thị món đã chọn -->
+                    <div class="selected-items-preview mb-3">
+                        <h6 class="mb-2">Selected Items:</h6>
+                        <div id="selectedItemsBadges">
+                            <!-- Badges sẽ được thêm vào đây bằng JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Container cho menu items có scroll -->
+                    <div class="menu-items-container">
+                        <!-- Spring Rolls -->
+                        <div class="menu-item d-flex align-items-center" onclick="toggleSelection(this)" data-name="Spring Rolls">
+                            <img src="../images/spring-rolls.jpg" alt="Spring Rolls" class="me-3">
+                            <div class="flex-grow-1">
+                                <h5>Spring Rolls <span class="badge bg-danger">Spicy</span></h5>
+                                <p class="text-muted mb-2">Fresh vegetables wrapped in rice paper with sweet chili sauce.</p>
+                                <div class="price mb-2">$8.99</div>
+                                <div class="quantity-controls">
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="quantity-display">0</span>
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grilled Salmon -->
+                        <div class="menu-item d-flex align-items-center" onclick="toggleSelection(this)" data-name="Grilled Salmon">
+                            <img src="../images/grilled-salmon.jpg" alt="Grilled Salmon" class="me-3">
+                            <div class="flex-grow-1">
+                                <h5>Grilled Salmon</h5>
+                                <p class="text-muted mb-2">Fresh Atlantic salmon with lemon butter sauce and seasonal vegetables.</p>
+                                <div class="price mb-2">$15.99</div>
+                                <div class="quantity-controls">
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="quantity-display">0</span>
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tiramisu -->
+                        <div class="menu-item d-flex align-items-center" onclick="toggleSelection(this)" data-name="Classic Tiramisu">
+                            <img src="../images/tiramisu.jpg" alt="Tiramisu" class="me-3">
+                            <div class="flex-grow-1">
+                                <h5>Classic Tiramisu</h5>
+                                <p class="text-muted mb-2">Italian dessert made with coffee-soaked ladyfingers and mascarpone cream.</p>
+                                <div class="price mb-2">$6.99</div>
+                                <div class="quantity-controls">
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="quantity-display">0</span>
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pasta -->
+                        <div class="menu-item d-flex align-items-center" onclick="toggleSelection(this)" data-name="Fettuccine Alfredo">
+                            <img src="../images/pasta.jpg" alt="Pasta" class="me-3">
+                            <div class="flex-grow-1">
+                                <h5>Fettuccine Alfredo</h5>
+                                <p class="text-muted mb-2">Creamy pasta with parmesan cheese and fresh herbs.</p>
+                                <div class="price mb-2">$12.99</div>
+                                <div class="quantity-controls">
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="quantity-display">0</span>
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bruschetta -->
+                        <div class="menu-item d-flex align-items-center" onclick="toggleSelection(this)" data-name="Bruschetta">
+                            <img src="../images/bruschetta.jpg" alt="Bruschetta" class="me-3">
+                            <div class="flex-grow-1">
+                                <h5>Bruschetta</h5>
+                                <p class="text-muted mb-2">Toasted bread topped with fresh tomatoes, basil, and olive oil.</p>
+                                <div class="price mb-2">$9.99</div>
+                                <div class="quantity-controls">
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="quantity-display">0</span>
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cheesecake -->
+                        <div class="menu-item d-flex align-items-center" onclick="toggleSelection(this)" data-name="New York Cheesecake">
+                            <img src="../images/cheesecake.jpg" alt="Cheesecake" class="me-3">
+                            <div class="flex-grow-1">
+                                <h5>New York Cheesecake</h5>
+                                <p class="text-muted mb-2">Rich and creamy cheesecake with berry compote.</p>
+                                <div class="price mb-2">$7.99</div>
+                                <div class="quantity-controls">
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="quantity-display">0</span>
+                                    <button type="button" class="btn btn-outline-primary btn-quantity" onclick="updateQuantity(this, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="contact-info mb-4">
+                    <h4 class="mb-3">Contact Information</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone">Phone</label>
+                            <input type="tel" class="form-control" id="phone" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address">Delivery Address</label>
+                        <textarea class="form-control" id="address" rows="3" required></textarea>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="order-summary mb-4">
+                    <h4 class="mb-3">Order Summary</h4>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Subtotal:</span>
+                                <span>$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Delivery Fee:</span>
+                                <span>$2.00</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <strong>Total:</strong>
+                                <strong>$2.00</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-order">
+                        <i class="fas fa-shopping-cart me-2"></i>Place Order
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        const subtotalElement = document.querySelector('.order-summary .card-body div:first-child span:last-child');
+        const totalElement = document.querySelector('.order-summary .card-body div:last-child strong:last-child');
+        const deliveryFee = 2.00;
+
+        function updateTotal() {
+            let subtotal = 0;
+            const prices = [8.99, 15.99, 6.99, 12.99, 9.99, 7.99];
+            
+            quantityInputs.forEach((input, index) => {
+                subtotal += prices[index] * input.value;
+            });
+
+            const total = subtotal + deliveryFee;
+            
+            subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+            totalElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        quantityInputs.forEach(input => {
+            input.addEventListener('change', updateTotal);
+        });
+
+        // Ngăn chặn sự kiện click lan truyền từ nút quantity
+        const quantityButtons = document.querySelectorAll('.btn-quantity');
+        quantityButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    });
+
+    function toggleSelection(element) {
+        element.classList.toggle('selected');
+        const quantityControls = element.querySelector('.quantity-controls');
+        const itemName = element.getAttribute('data-name');
+        
+        if (element.classList.contains('selected')) {
+            quantityControls.style.display = 'flex';
+            addSelectedItemBadge(itemName);
+        } else {
+            quantityControls.style.display = 'none';
+            const quantityDisplay = element.querySelector('.quantity-display');
+            quantityDisplay.textContent = '0';
+            removeSelectedItemBadge(itemName);
+            updateTotal();
+        }
+    }
+    function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = '../login/index.html';
+            }
+        }
+    function addSelectedItemBadge(itemName) {
+        const badgesContainer = document.getElementById('selectedItemsBadges');
+        const badge = document.createElement('span');
+        badge.className = 'selected-item-badge';
+        badge.setAttribute('data-item', itemName);
+        badge.innerHTML = `${itemName} <i class="fas fa-check ms-1"></i>`;
+        badgesContainer.appendChild(badge);
+    }
+
+    function removeSelectedItemBadge(itemName) {
+        const badge = document.querySelector(`.selected-item-badge[data-item="${itemName}"]`);
+        if (badge) {
+            badge.remove();
+        }
+    }
+
+    function updateQuantity(button, change) {
+        const quantityDisplay = button.parentElement.querySelector('.quantity-display');
+        let quantity = parseInt(quantityDisplay.textContent);
+        quantity = Math.max(0, quantity + change); // Không cho phép số âm
+        quantityDisplay.textContent = quantity;
+        updateTotal();
+    }
+
+    function updateTotal() {
+        const menuItems = document.querySelectorAll('.menu-item');
+        let subtotal = 0;
+        const prices = [8.99, 15.99, 6.99, 12.99, 9.99, 7.99];
+        
+        menuItems.forEach((item, index) => {
+            const quantityDisplay = item.querySelector('.quantity-display');
+            const quantity = parseInt(quantityDisplay.textContent);
+            subtotal += prices[index] * quantity;
+        });
+
+        const deliveryFee = 2.00;
+        const total = subtotal + deliveryFee;
+        
+        document.querySelector('.order-summary .card-body div:first-child span:last-child').textContent = 
+            `$${subtotal.toFixed(2)}`;
+        document.querySelector('.order-summary .card-body div:last-child strong:last-child').textContent = 
+            `$${total.toFixed(2)}`;
+    }
+    </script>
+</body>
+</html>

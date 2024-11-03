@@ -1,0 +1,68 @@
+Database: RestaurantDB
+│
+├── Table: Users
+│   ├── user_id (Primary Key)  # Mã người dùng
+│   ├── username                # Tên đăng nhập
+│   ├── password                # Mật khẩu (đã mã hóa)
+│   ├── role                    # Vai trò (admin, customer)
+│   └── email                   # Địa chỉ email
+│
+├── Table: Food
+│   ├── food_id (Primary Key)   # Mã món ăn
+│   ├── name                     # Tên món ăn
+│   ├── description              # Mô tả món ăn
+│   ├── price                    # Giá món ăn
+│   ├── category                 # Thể loại món ăn
+│   └── image_url                # Đường dẫn đến hình ảnh món ăn
+│
+├── Table: Orders
+│   ├── order_id (Primary Key)   # Mã đơn hàng
+│   ├── user_id (Foreign Key)    # Mã người dùng (liên kết đến Users)
+│   ├── order_date                # Ngày đặt hàng
+│   ├── status                    # Trạng thái đơn hàng (Pending, Completed, Cancelled)
+│   ├── total                     # Tổng tiền đơn hàng
+│   └── items                     # Danh sách món ăn trong đơn hàng (có thể là JSON hoặc bảng riêng)
+│
+└── Table: OrderItem
+    ├── order_item_id (Primary Key) # Mã món ăn trong đơn hàng
+    ├── order_id (Foreign Key)      # Mã đơn hàng (liên kết đến Orders)
+    ├── food_id (Foreign Key)       # Mã món ăn (liên kết đến Food)
+    └── quantity                     # Số lượng món ăn trong đơn hàng
+
+Mối quan hệ giữa các bảng
+Users và Orders:
+
+Mối quan hệ: Một-Nhiều (One-to-Many)
+Giải thích: Một người dùng có thể tạo nhiều đơn hàng, nhưng mỗi đơn hàng chỉ thuộc về một người dùng.
+Orders và OrderItem:
+
+Mối quan hệ: Một-Nhiều (One-to-Many)
+Giải thích: Một đơn hàng có thể có nhiều mục (OrderItem), nhưng mỗi mục trong đơn hàng chỉ thuộc về một đơn hàng cụ thể.
+Food và OrderItem:
+
+Mối quan hệ: Một-Nhiều (One-to-Many)
+Giải thích: Một món ăn có thể xuất hiện trong nhiều đơn hàng (OrderItem), nhưng mỗi mục trong danh sách đơn hàng chỉ tham chiếu đến một món ăn duy nhất.
+
+
++----------------+        +----------------+         +-----------------+
+|     Users      |        |     Orders     |         |      Food       |
+|----------------|        |----------------|         |-----------------|
+| user_id (PK)   |<------1| order_id (PK)  |         | food_id (PK)    |
+| username       |        | user_id (FK)   |<-------1| name            |
+| password       |        | order_date     |         | description     |
+| role           |        | status         |         | price           |
+| email          |        | total          |         | category        |
++----------------+        +----------------+         | image_url       |
+                                  | 1                +-----------------+
+                                  |
+                                  |
+                                  | M
+                          +------------------+
+                          |    OrderItem     |
+                          |------------------|
+                          | order_item_id(PK)|
+                          | order_id (FK)    |
+                          | food_id (FK)     |
+                          | quantity         |
+                          +------------------+
+
