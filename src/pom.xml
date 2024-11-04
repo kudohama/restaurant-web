@@ -1,0 +1,5 @@
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.31</version> <!-- Đảm bảo sử dụng phiên bản phù hợp -->
+</dependency>
